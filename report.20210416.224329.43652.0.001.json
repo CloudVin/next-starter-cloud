@@ -1,0 +1,419 @@
+
+{
+  "header": {
+    "reportVersion": 1,
+    "event": "Allocation failed - JavaScript heap out of memory",
+    "trigger": "FatalError",
+    "filename": "report.20210416.224329.43652.0.001.json",
+    "dumpEventTime": "2021-04-16T22:43:29Z",
+    "dumpEventTimeStamp": "1618584209037",
+    "processId": 43652,
+    "cwd": "G:\\webProject\\next-demo",
+    "commandLine": [
+      "C:\\Program Files\\nodejs\\node.exe",
+      "G:\\webProject\\next-demo\\node_modules\\.bin\\\\..\\next\\dist\\bin\\next",
+      "dev"
+    ],
+    "nodejsVersion": "v12.13.1",
+    "wordSize": 64,
+    "arch": "x64",
+    "platform": "win32",
+    "componentVersions": {
+      "node": "12.13.1",
+      "v8": "7.7.299.13-node.16",
+      "uv": "1.33.1",
+      "zlib": "1.2.11",
+      "brotli": "1.0.7",
+      "ares": "1.15.0",
+      "modules": "72",
+      "nghttp2": "1.39.2",
+      "napi": "5",
+      "llhttp": "1.1.4",
+      "http_parser": "2.8.0",
+      "openssl": "1.1.1d",
+      "cldr": "35.1",
+      "icu": "64.2",
+      "tz": "2019c",
+      "unicode": "12.1"
+    },
+    "release": {
+      "name": "node",
+      "lts": "Erbium",
+      "headersUrl": "https://nodejs.org/download/release/v12.13.1/node-v12.13.1-headers.tar.gz",
+      "sourceUrl": "https://nodejs.org/download/release/v12.13.1/node-v12.13.1.tar.gz",
+      "libUrl": "https://nodejs.org/download/release/v12.13.1/win-x64/node.lib"
+    },
+    "osName": "Windows_NT",
+    "osRelease": "10.0.18362",
+    "osVersion": "Windows 10 Enterprise",
+    "osMachine": "x86_64",
+    "cpus": [
+      {
+        "model": "Intel(R) Pentium(R) CPU 4415U @ 2.30GHz",
+        "speed": 2304,
+        "user": 381648156,
+        "nice": 0,
+        "sys": 196769546,
+        "idle": 2090305390,
+        "irq": 39608265
+      },
+      {
+        "model": "Intel(R) Pentium(R) CPU 4415U @ 2.30GHz",
+        "speed": 2304,
+        "user": 375942906,
+        "nice": 0,
+        "sys": 136852437,
+        "idle": 2155927218,
+        "irq": 2773062
+      },
+      {
+        "model": "Intel(R) Pentium(R) CPU 4415U @ 2.30GHz",
+        "speed": 2304,
+        "user": 434352546,
+        "nice": 0,
+        "sys": 161560000,
+        "idle": 2072810015,
+        "irq": 1464953
+      },
+      {
+        "model": "Intel(R) Pentium(R) CPU 4415U @ 2.30GHz",
+        "speed": 2304,
+        "user": 437509406,
+        "nice": 0,
+        "sys": 142749859,
+        "idle": 2088463296,
+        "irq": 1142656
+      }
+    ],
+    "networkInterfaces": [
+      {
+        "name": "WLAN",
+        "internal": false,
+        "mac": "00:e1:8c:56:55:f4",
+        "address": "fe80::9072:7aab:c6ae:e20a",
+        "netmask": "ffff:ffff:ffff:ffff::",
+        "family": "IPv6",
+        "scopeid": 23
+      },
+      {
+        "name": "WLAN",
+        "internal": false,
+        "mac": "00:e1:8c:56:55:f4",
+        "address": "192.168.101.12",
+        "netmask": "255.255.255.0",
+        "family": "IPv4"
+      },
+      {
+        "name": "Loopback Pseudo-Interface 1",
+        "internal": true,
+        "mac": "00:00:00:00:00:00",
+        "address": "::1",
+        "netmask": "ffff:ffff:ffff:ffff:ffff:ffff:ffff:ffff",
+        "family": "IPv6",
+        "scopeid": 0
+      },
+      {
+        "name": "Loopback Pseudo-Interface 1",
+        "internal": true,
+        "mac": "00:00:00:00:00:00",
+        "address": "127.0.0.1",
+        "netmask": "255.0.0.0",
+        "family": "IPv4"
+      }
+    ],
+    "host": "DESKTOP-HMEB2SP"
+  },
+  "javascriptStack": {
+    "message": "No stack.",
+    "stack": [
+      "Unavailable."
+    ]
+  },
+  "nativeStack": [
+    {
+      "pc": "0x00007ff74f8f1729",
+      "symbol": ""
+    },
+    {
+      "pc": "0x00007ff74f8f5b4c",
+      "symbol": ""
+    },
+    {
+      "pc": "0x00007ff74f8f4b08",
+      "symbol": ""
+    },
+    {
+      "pc": "0x00007ff74f9e369b",
+      "symbol": ""
+    },
+    {
+      "pc": "0x00007ff7501e82de",
+      "symbol": ""
+    },
+    {
+      "pc": "0x00007ff7501d0321",
+      "symbol": ""
+    },
+    {
+      "pc": "0x00007ff75009dbec",
+      "symbol": ""
+    },
+    {
+      "pc": "0x00007ff7500a5cf1",
+      "symbol": ""
+    },
+    {
+      "pc": "0x00007ff75009b353",
+      "symbol": ""
+    },
+    {
+      "pc": "0x00007ff750099b24",
+      "symbol": ""
+    },
+    {
+      "pc": "0x00007ff7500badf5",
+      "symbol": ""
+    },
+    {
+      "pc": "0x00007ff74fe26e19",
+      "symbol": ""
+    },
+    {
+      "pc": "0x00007ff75061404d",
+      "symbol": ""
+    },
+    {
+      "pc": "0x000000de41ab1104",
+      "symbol": ""
+    }
+  ],
+  "javascriptHeap": {
+    "totalMemory": 410939392,
+    "totalCommittedMemory": 410939392,
+    "usedMemory": 392264160,
+    "availableMemory": 1805210784,
+    "memoryLimit": 2197815296,
+    "heapSpaces": {
+      "read_only_space": {
+        "memorySize": 262144,
+        "committedMemory": 262144,
+        "capacity": 261872,
+        "used": 32296,
+        "available": 229576
+      },
+      "new_space": {
+        "memorySize": 1048576,
+        "committedMemory": 1048576,
+        "capacity": 1047488,
+        "used": 1047488,
+        "available": 0
+      },
+      "old_space": {
+        "memorySize": 232108032,
+        "committedMemory": 232108032,
+        "capacity": 231607800,
+        "used": 217828992,
+        "available": 13778808
+      },
+      "code_space": {
+        "memorySize": 4096000,
+        "committedMemory": 4096000,
+        "capacity": 3887136,
+        "used": 3304096,
+        "available": 583040
+      },
+      "map_space": {
+        "memorySize": 5771264,
+        "committedMemory": 5771264,
+        "capacity": 5764768,
+        "used": 3068800,
+        "available": 2695968
+      },
+      "large_object_space": {
+        "memorySize": 166457344,
+        "committedMemory": 166457344,
+        "capacity": 165885144,
+        "used": 165885144,
+        "available": 0
+      },
+      "code_large_object_space": {
+        "memorySize": 1196032,
+        "committedMemory": 1196032,
+        "capacity": 1097344,
+        "used": 1097344,
+        "available": 0
+      },
+      "new_large_object_space": {
+        "memorySize": 0,
+        "committedMemory": 0,
+        "capacity": 1047488,
+        "used": 0,
+        "available": 1047488
+      }
+    }
+  },
+  "resourceUsage": {
+    "userCpuSeconds": 940.906,
+    "kernelCpuSeconds": 54.125,
+    "cpuConsumptionPercent": 1.08861,
+    "maxRss": 1377976320,
+    "pageFaults": {
+      "IORequired": 7008584,
+      "IONotRequired": 0
+    },
+    "fsActivity": {
+      "reads": 39339,
+      "writes": 2207
+    }
+  },
+  "libuv": [
+  ],
+  "environmentVariables": {
+    "=C:": "C:\\",
+    "=G:": "G:\\webProject\\next-demo",
+    "ALLUSERSPROFILE": "C:\\ProgramData",
+    "APPDATA": "C:\\Users\\MAIBENBEN\\AppData\\Roaming",
+    "CHROME_CRASHPAD_PIPE_NAME": "\\\\.\\pipe\\crashpad_452_YECTNOUWFNQZOZZN",
+    "COLORTERM": "truecolor",
+    "CommonProgramFiles": "C:\\Program Files\\Common Files",
+    "CommonProgramFiles(x86)": "C:\\Program Files (x86)\\Common Files",
+    "CommonProgramW6432": "C:\\Program Files\\Common Files",
+    "COMPUTERNAME": "DESKTOP-HMEB2SP",
+    "ComSpec": "C:\\WINDOWS\\system32\\cmd.exe",
+    "DriverData": "C:\\Windows\\System32\\Drivers\\DriverData",
+    "GIT_ASKPASS": "c:\\Users\\MAIBENBEN\\AppData\\Local\\Programs\\Microsoft VS Code\\resources\\app\\extensions\\git\\dist\\askpass.sh",
+    "HOMEDRIVE": "C:",
+    "HOMEPATH": "\\Users\\MAIBENBEN",
+    "INIT_CWD": "G:\\webProject\\next-demo",
+    "IntelliJ IDEA": "C:\\Program Files\\JetBrains\\IntelliJ IDEA 2018.3.5\\bin;",
+    "JAVA_HOME": "C:\\Program Files\\Java\\jdk1.8.0_161",
+    "LANG": "zh_CN.UTF-8",
+    "LM_LICENSE_FILE": "C:\\ispLEVER_Classic2_0\\license.dat;",
+    "LOCALAPPDATA": "C:\\Users\\MAIBENBEN\\AppData\\Local",
+    "LOGONSERVER": "\\\\DESKTOP-HMEB2SP",
+    "LSC_INI_PATH": "C:\\lsc_env",
+    "NODE": "C:\\Program Files\\nodejs\\node.exe",
+    "NODE_ENV": "development",
+    "npm_config_argv": "{\"remain\":[],\"cooked\":[\"run\",\"dev\"],\"original\":[\"dev\"]}",
+    "npm_config_bin_links": "true",
+    "npm_config_ignore_optional": "",
+    "npm_config_ignore_scripts": "",
+    "npm_config_init_license": "MIT",
+    "npm_config_init_version": "1.0.0",
+    "npm_config_loglevel": "http",
+    "npm_config_progress": "",
+    "npm_config_registry": "https://registry.yarnpkg.com",
+    "npm_config_save_prefix": "^",
+    "npm_config_strict_ssl": "true",
+    "npm_config_user_agent": "yarn/1.22.10 npm/? node/v12.13.1 win32 x64",
+    "npm_config_version_commit_hooks": "true",
+    "npm_config_version_git_message": "v%s",
+    "npm_config_version_git_sign": "",
+    "npm_config_version_git_tag": "true",
+    "npm_config_version_tag_prefix": "v",
+    "npm_execpath": "C:\\Users\\MAIBENBEN\\AppData\\Roaming\\npm\\node_modules\\yarn\\bin\\yarn.js",
+    "npm_lifecycle_event": "dev",
+    "npm_lifecycle_script": "next dev",
+    "npm_node_execpath": "C:\\Program Files\\nodejs\\node.exe",
+    "npm_package_dependencies_autoprefixer": "^10.2.5",
+    "npm_package_dependencies_axios": "^0.21.1",
+    "npm_package_dependencies_next": "10.1.3",
+    "npm_package_dependencies_postcss": "^8.2.10",
+    "npm_package_dependencies_react": "17.0.2",
+    "npm_package_dependencies_react_dom": "17.0.2",
+    "npm_package_dependencies_styled_components": "^5.2.3",
+    "npm_package_dependencies_tailwindcss": "^2.1.1",
+    "npm_package_description": "First, run the development server:",
+    "npm_package_devDependencies_babel_plugin_styled_components": "^1.12.0",
+    "npm_package_name": "next-demo",
+    "npm_package_private": "true",
+    "npm_package_readmeFilename": "README.md",
+    "npm_package_scripts_build": "next build",
+    "npm_package_scripts_dev": "next dev",
+    "npm_package_scripts_start": "next start",
+    "npm_package_version": "0.1.0",
+    "NUMBER_OF_PROCESSORS": "4",
+    "OneDrive": "C:\\Users\\MAIBENBEN\\OneDrive",
+    "OneDriveConsumer": "C:\\Users\\MAIBENBEN\\OneDrive",
+    "ORIGINAL_XDG_CURRENT_DESKTOP": "undefined",
+    "OS": "Windows_NT",
+    "Path": "C:\\Users\\MAIBEN~1\\AppData\\Local\\Temp\\yarn--1618492813810-0.12894268985194435;G:\\webProject\\next-demo\\node_modules\\.bin;C:\\Users\\MAIBENBEN\\AppData\\Local\\Yarn\\Data\\link\\node_modules\\.bin;C:\\Users\\MAIBENBEN\\AppData\\Local\\Yarn\\bin;C:\\Program Files\\libexec\\lib\\node_modules\\npm\\bin\\node-gyp-bin;C:\\Program Files\\lib\\node_modules\\npm\\bin\\node-gyp-bin;C:\\Program Files\\nodejs\\node_modules\\npm\\bin\\node-gyp-bin;C:\\Program Files (x86)\\NetSarang\\Xshell 6\\;C:\\ispLEVER_Classic2_0\\ispcpld\\bin;C:\\ispLEVER_Classic2_0\\ispFPGA\\bin\\nt;C:\\ispLEVER_Classic2_0\\active-hdl\\BIN;C:\\ProgramData\\Oracle\\Java\\javapath;C:\\Program Files (x86)\\Intel\\iCLS Client\\;C:\\Program Files\\Intel\\iCLS Client\\;C:\\Windows\\system32;C:\\Windows;C:\\Windows\\System32\\Wbem;C:\\Windows\\System32\\WindowsPowerShell\\v1.0\\;C:\\Program Files (x86)\\NVIDIA Corporation\\PhysX\\Common;C:\\Program Files (x86)\\Intel\\Intel(R) Management Engine Components\\DAL;C:\\Program Files\\Intel\\Intel(R) Management Engine Components\\DAL;C:\\Program Files (x86)\\Intel\\Intel(R) Management Engine Components\\IPT;C:\\Program Files\\Intel\\Intel(R) Management Engine Components\\IPT;C:\\Program Files\\Java\\jdk1.8.0_161\\bin;C:\\Program Files\\Java\\jdk1.8.0_161\\jre\\bin;C:\\WINDOWS\\system32;C:\\WINDOWS;C:\\WINDOWS\\System32\\Wbem;C:\\WINDOWS\\System32\\WindowsPowerShell\\v1.0\\;C:\\Program Files (x86)\\Microsoft SQL Server\\100\\Tools\\Binn\\;C:\\Program Files\\Microsoft SQL Server\\100\\Tools\\Binn\\;C:\\Program Files\\Microsoft SQL Server\\100\\DTS\\Binn\\;C:\\Program Files (x86)\\Microsoft SQL Server\\100\\Tools\\Binn\\VSShell\\Common7\\IDE\\;C:\\Program Files (x86)\\Microsoft Visual Studio 9.0\\Common7\\IDE\\PrivateAssemblies\\;C:\\Program Files (x86)\\Microsoft SQL Server\\100\\DTS\\Binn\\;C:\\WINDOWS\\System32\\OpenSSH\\;C:\\Program Files\\nodejs\\;C:\\Users\\MAIBENBEN\\Desktop\\blog\\node_modules\\.bin;F:\\Chrome dowload\\cmder;C:\\Program Files\\Git\\cmd;C:\\Users\\MAIBENBEN\\AppData\\Roaming\\npm\\node_modules\\vue-cli\\bin;C:\\Users\\MAIBENBEN\\.windows-build-tools\\python27\\;C:\\Users\\MAIBENBEN\\AppData\\Local\\Microsoft\\WindowsApps;C:\\Program Files\\JetBrains\\IntelliJ IDEA 2018.3.5\\bin;;C:\\Users\\MAIBENBEN\\AppData\\Local\\Programs\\Microsoft VS Code\\bin;C:\\Users\\MAIBENBEN\\AppData\\Roaming\\npm;C:\\Program Files\\MySQL\\MySQL Server 8.0\\bin;",
+    "PATHEXT": ".COM;.EXE;.BAT;.CMD;.VBS;.VBE;.JSE;.WSF;.WSH;.MSC;.CPL",
+    "PROCESSOR_ARCHITECTURE": "AMD64",
+    "PROCESSOR_IDENTIFIER": "Intel64 Family 6 Model 142 Stepping 9, GenuineIntel",
+    "PROCESSOR_LEVEL": "6",
+    "PROCESSOR_REVISION": "8e09",
+    "ProgramData": "C:\\ProgramData",
+    "ProgramFiles": "C:\\Program Files",
+    "ProgramFiles(x86)": "C:\\Program Files (x86)",
+    "ProgramW6432": "C:\\Program Files",
+    "PROMPT": "$P$G",
+    "PSModulePath": "C:\\Users\\MAIBENBEN\\Documents\\WindowsPowerShell\\Modules;C:\\Program Files\\WindowsPowerShell\\Modules;C:\\WINDOWS\\system32\\WindowsPowerShell\\v1.0\\Modules",
+    "PUBLIC": "C:\\Users\\Public",
+    "SESSIONNAME": "Console",
+    "SystemDrive": "C:",
+    "SystemRoot": "C:\\WINDOWS",
+    "TEMP": "C:\\Users\\MAIBEN~1\\AppData\\Local\\Temp",
+    "TERM_PROGRAM": "vscode",
+    "TERM_PROGRAM_VERSION": "1.55.0",
+    "TMP": "C:\\Users\\MAIBEN~1\\AppData\\Local\\Temp",
+    "TRACE_ID": "7f204c41793e4a08",
+    "USERDOMAIN": "DESKTOP-HMEB2SP",
+    "USERDOMAIN_ROAMINGPROFILE": "DESKTOP-HMEB2SP",
+    "USERNAME": "MAIBENBEN",
+    "USERPROFILE": "C:\\Users\\MAIBENBEN",
+    "VSCODE_GIT_ASKPASS_MAIN": "c:\\Users\\MAIBENBEN\\AppData\\Local\\Programs\\Microsoft VS Code\\resources\\app\\extensions\\git\\dist\\askpass-main.js",
+    "VSCODE_GIT_ASKPASS_NODE": "C:\\Users\\MAIBENBEN\\AppData\\Local\\Programs\\Microsoft VS Code\\Code.exe",
+    "VSCODE_GIT_IPC_HANDLE": "\\\\.\\pipe\\vscode-git-4a630448a1-sock",
+    "windir": "C:\\WINDOWS",
+    "YARN_WRAP_OUTPUT": "false"
+  },
+  "sharedObjects": [
+    "C:\\Program Files\\nodejs\\node.exe",
+    "C:\\WINDOWS\\SYSTEM32\\ntdll.dll",
+    "C:\\WINDOWS\\System32\\KERNEL32.DLL",
+    "C:\\WINDOWS\\System32\\KERNELBASE.dll",
+    "C:\\WINDOWS\\System32\\WS2_32.dll",
+    "C:\\WINDOWS\\System32\\RPCRT4.dll",
+    "C:\\WINDOWS\\System32\\ADVAPI32.dll",
+    "C:\\WINDOWS\\System32\\msvcrt.dll",
+    "C:\\WINDOWS\\SYSTEM32\\dbghelp.dll",
+    "C:\\WINDOWS\\System32\\sechost.dll",
+    "C:\\WINDOWS\\System32\\ucrtbase.dll",
+    "C:\\WINDOWS\\System32\\USER32.dll",
+    "C:\\WINDOWS\\System32\\win32u.dll",
+    "C:\\WINDOWS\\System32\\GDI32.dll",
+    "C:\\WINDOWS\\System32\\gdi32full.dll",
+    "C:\\WINDOWS\\System32\\msvcp_win.dll",
+    "C:\\WINDOWS\\System32\\PSAPI.DLL",
+    "C:\\WINDOWS\\System32\\CRYPT32.dll",
+    "C:\\WINDOWS\\System32\\MSASN1.dll",
+    "C:\\WINDOWS\\System32\\bcrypt.dll",
+    "C:\\WINDOWS\\SYSTEM32\\IPHLPAPI.DLL",
+    "C:\\WINDOWS\\SYSTEM32\\USERENV.dll",
+    "C:\\WINDOWS\\System32\\profapi.dll",
+    "C:\\WINDOWS\\SYSTEM32\\WINMM.dll",
+    "C:\\WINDOWS\\SYSTEM32\\winmmbase.dll",
+    "C:\\WINDOWS\\System32\\cfgmgr32.dll",
+    "C:\\WINDOWS\\System32\\bcryptPrimitives.dll",
+    "C:\\WINDOWS\\System32\\IMM32.DLL",
+    "C:\\WINDOWS\\System32\\powrprof.dll",
+    "C:\\WINDOWS\\System32\\UMPDC.dll",
+    "C:\\WINDOWS\\SYSTEM32\\CRYPTBASE.DLL",
+    "C:\\WINDOWS\\system32\\uxtheme.dll",
+    "C:\\WINDOWS\\System32\\combase.dll",
+    "C:\\WINDOWS\\system32\\mswsock.dll",
+    "C:\\WINDOWS\\System32\\kernel.appcore.dll",
+    "C:\\WINDOWS\\System32\\NSI.dll",
+    "C:\\WINDOWS\\SYSTEM32\\dhcpcsvc6.DLL",
+    "C:\\WINDOWS\\SYSTEM32\\dhcpcsvc.DLL",
+    "C:\\WINDOWS\\SYSTEM32\\DNSAPI.dll",
+    "C:\\WINDOWS\\system32\\napinsp.dll",
+    "C:\\WINDOWS\\system32\\pnrpnsp.dll",
+    "C:\\WINDOWS\\System32\\winrnr.dll",
+    "C:\\WINDOWS\\system32\\NLAapi.dll",
+    "C:\\WINDOWS\\system32\\wshbth.dll",
+    "C:\\Windows\\System32\\rasadhlp.dll",
+    "C:\\WINDOWS\\System32\\fwpuclnt.dll"
+  ]
+}

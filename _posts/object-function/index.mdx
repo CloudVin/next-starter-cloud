@@ -1,0 +1,251 @@
+---
+title: "【JavaScript】js内置对象及创建对象的方式"
+description: ""
+date: "2020-3-7"
+tag: 'JavaScript'
+---
+
+对象可以分成几类：
+
+*   宿主对象：JS 宿主环境提供的对象，行为完全由宿主环境决定。
+*   内置对象：JS 提供的对象。
+    *   固有对象：由标准规定，随着 JS 运行时创建而自动创建的对象实例。
+    *   原生对象：用户可以通过 Array、RegExp 等内置构造器或者特殊语法创建的对象。
+    *   普通对象：由{}语法、Object 构造器或者 class 关键字定义的对象，能被原型继承。
+
+浏览器环境中的宿主：全局对象是 window，window 上的属性一部分来自 JS，一部分来自浏览器环境。
+
+固有对象在 js 代码执行前就已经被创建了，它们扮演着类似基础库的角色。“类”就是固有对象的一种。
+
+js 中能够通过语言本身的构造器创建的对象。
+
+js 提供了 30 多个**构造器**（内置对象），分成以下几个种类：
+
+`<img src="https://static001.geekbang.org/resource/image/6c/d0/6cb1df319bbc7c7f948acfdb9ffd99d0.png" style="width: 100%;">`
+
+通过这些构造器，我们可以用 new 运算创建新的对象。这些构造器就是原生对象。
+
+几乎所有这些构造器的能力都是无法用纯 JavaScript 代码实现的，它们也无法用 class/extend 语法来继承。
+
+这些字段使得原型继承方法无法正常工作，所以，我们可以认为，所有这些原生对象都是为了特定能力或者性能，而设计出来的“**特权对象**”。
+
+函数对象的定义是：具有\[\[call\]\]私有字段的对象。
+
+构造器对象的定义是：具有私有字段\[\[construct\]\]的对象。
+
+任何对象只需要实现\[\[call\]\]，它就是一个函数对象，可以去作为函数被调用。而如果它能实现\[\[construct\]\]，它就是一个构造器对象，可以作为构造器被调用。
+
+用户用 **function** 关键字创建的函数必定**同时是函数和构造器**。不过，它们表现出来的行为效果却并不相同。
+
+对于用户使用 function 语法或者 Function 构造器创建的对象来说，\[\[call\]\]和\[\[construct\]\]行为总是相似的，它们执行同一段代码。
+
+```null
+function f(){
+    return 1;
+}
+var v = f(); 
+var o = new f(); 
+```
+
+\[\[construct\]\]的执行过程如下：
+
+*   以 Object.prototype 为原型创建一个新对象；
+*   以新对象为 this，执行函数的\[\[call\]\]；
+*   如果\[\[call\]\]的返回值是对象，那么，返回这个对象，否则返回第一步创建的新对象。
+
+这样的规则造成了个有趣的现象，如果我们的构造器返回了一个新的对象，那么 new 创建的新对象就变成了一个构造函数之外完全无法访问的对象，这一定程度上可以实现“私有”。
+
+```null
+function cls(){
+    this.a = 100;
+      console.log(this) 
+    return { 
+        getValue:() => { 
+          console.log(this) 
+          return this.a
+        }
+    }
+}
+var o = new cls;
+console.log(o.getValue()); 
+console.log(o.a); 
+console.log(this.a); 
+
+```
+
+构造函数一般不应该用 return 来返回值。而这个构造函数 cls 用 return 来返回值。并且**返回值是一个对象**（函数也是对象）则会用这个对象代替自动创建的实例对象返回给 o。也就是说你设置的是实例对象的 a，返回给 o 的却是 getValue 一个箭头函数，箭头函数没有 a 属性。
+
+如果想要访问 a 可以设置 getValue 为 cls 的方法：
+
+```null
+function cls(){
+    this.a = 100;
+    this.getValue =()=> {
+        return this.a;
+    }
+}
+var o = new cls();
+console.log(o.a); 
+console.log(o.getValue()); 
+```
+
+在固有对象和原生对象中，有一些对象的行为跟正常对象有很大区别。
+
+它们常见的下标运算（就是使用中括号或者点来做属性访问）或者设置原型跟普通对象不同。
+
+*   Array：Array 的 length 属性根据最大的下标自动发生变化。
+*   Object.prototype：作为所有正常对象的默认原型，不能再给它设置原型了。
+*   String：为了支持下标运算，String 的正整数属性访问会去字符串里查找。
+*   Arguments：arguments 的非负整数型下标属性跟对应的变量联动。
+*   模块的 namespace 对象：特殊的地方非常多，跟一般对象完全不一样，尽量只用于 import 吧。
+*   类型数组和数组缓冲区：跟内存块相关联，下标运算比较特殊。
+*   bind 后的 function：跟原来的函数相关联。
+
+先创建空 Object 对象，再动态添加属性和方法
+
+**适用场景：** 起始时不确定对象内部数据
+
+**问题：** 语句太多
+
+```null
+var person = new Object();
+person.name = "lisi";
+person.age = 21;
+person.family = ["lida","lier","wangwu"];
+person.say = function(){
+  alert(this.name);
+}
+```
+
+使用 {} 创建对象，同时指定属性和方法
+
+**适用场景：** 起始对象内部数据是确定的
+
+**问题：** 如果创建多个对象时，会产生大量重复代码，为了解决此问题，工厂模式被开发。
+
+```null
+var person = {
+  name: "lisi",
+  age: 21,
+  family: ["lida","lier","wangwu"],
+  say: function(){
+    alert(this.name);
+  }
+};
+
+```
+
+通过工厂函数动态创建对象并返回
+
+**适用场景：** 需要创建多个对象
+
+**问题：** 对象没有一个具体的类型，都是 Object 类型
+
+```null
+function createPerson(name,age,family) {
+    var o = new Object();
+    o.name = name;
+    o.age = age;
+    o.family = family;
+    o.say = function(){
+        alert(this.name);
+    }
+    return o;
+}
+
+var person1 =  createPerson("lisi",21,["lida","lier","wangwu"]);   
+var person2 =  createPerson("wangwu",18,["lida","lier","lisi"]);
+console.log(person1 instanceof Object); 
+```
+
+自定义构造函数，通过 new 创建对象
+
+**适用场景：** 需要创建多个类型确定的对象
+
+**问题：** 每个对象都有相同的数据，浪费内存
+
+```null
+function Person(name,age,family) {
+    this.name = name;
+    this.age = age;
+    this.family = family;
+    this.say = function(){
+        alert(this.name);
+    }
+}
+var person1 = new Person("lisi",21,["lida","lier","wangwu"]);
+var person2 = new Person("lisi",21,["lida","lier","lisi"]);
+console.log(person1 instanceof Object); 
+console.log(person1 instanceof Person); 
+console.log(person2 instanceof Object); 
+console.log(person2 instanceof Person); 
+console.log(person1.constructor);      
+```
+
+构造函数知道自己从哪里来（通过 instanceof 可以看出其既是 Object 的实例，又是 Person 的实例）
+
+构造函数的缺陷是每个实例的方法是一样的但是每次 new 都会创建一个新的，浪费内存，因此产生了原型模式
+
+**好处**：
+
+方法是共享的了，所有的实例的方法都指向同一个。
+
+问题：
+
+1.**引用类型**的属性只要有一个实例对象修改了，其他也会跟着修改。因为所有实例对象的属性都是共用的。
+
+2.所有都是共享的，没有办法创建实例自己的属性和方法，也没有办法像构造函数那样传递参数。
+
+```null
+function Person() {
+}
+
+Person.prototype.name = "lisi";
+Person.prototype.age = 21;
+Person.prototype.arr = [1, 2, 3];
+Person.prototype.say = function(){
+    alert(this.name);
+};
+
+
+var person1 = new Person()
+var person2 = new Person();
+
+console.log(person.family) 
+console.log(person2.family) 
+person.arr.push(4)
+console.log(person.family) 
+console.log(person2.family) 
+```
+
+**优点**：
+
+1.  解决了原型模式没有办法传递参数的问题
+    
+2.  保证了每个实例有自己的私有属性，解决了原型模式对于引用类型的属性的问题
+    
+3.  通过原型链`__proto__`共享着对相同方法的引用，解决了构造函数模式不能共享方法的问题，最大限度的节省了内存。
+    
+
+```null
+function Person(name,age,family){
+    this.name = name;
+    this.age = age;
+    this.family = family;
+}
+
+Person.prototype = {
+    say: function(){
+        console.log(this.name);
+    }
+}
+
+var person1 = new Person("lisi",21,["lida","lier","wangwu"]);
+console.log(person1); 
+person1.say(); 
+var person2 = new Person("wangwu",22,["lida","lier","lisi"]);
+console.log(person2); 
+person2.say(); 
+```
+
+> **注意**：在使用 prototype 的时候，不要用字面量的写法。否则，会重新生成一个新对象，切断与之前的联系。

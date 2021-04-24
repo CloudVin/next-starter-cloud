@@ -1,0 +1,156 @@
+---
+title: '【JavaScript】面向对象——类'
+date: '2020-1-27'
+description: ''
+tag: 'JavaScript'
+---
+
+**基于类的编程语言：C++、Java**提倡使用一个关注分类和类之间关系开发模型。 总是先有类，再从类去实例化一个对象。类与类之间又可能会形成继承、组合等关系。
+
+**基于原型：JS**更为提倡程序员去关注一系列对象实例的行为，而后才去关心如何将这些对象，划分到最近的使用方式相似的原型对象，而不是将它们分成类。
+
+用两条概括：
+
+*   如果所有对象都有私有字段(\[prototype\])，就是对象的原型；
+*   读一个属性，如果对象本身没有，则会继续访问对象的原型，知道原型为空或者找到为止。
+
+ES6提供了一些列内置函数，以便更为直接地访问操纵原型。
+
+三个方法分别为：
+
+*   Object.create 根据指定的原型创建新对象，原型可以是null;
+*   Object.getPrototypeOf 获得一个对象的原型
+*   Object.setPrototypeOf 设置一个对象的原型；
+
+```jsx
+var cat = {
+  say() {
+    console.log("meow~");
+  },
+  jump() {
+    console.log("jump");
+  }
+}
+
+var tiger = Object.create(cat, {
+  say: {
+    writable: true,
+    configurable: true,
+    enumerable: true,
+    value: function() {
+      console.log("roar!");
+    }
+  }
+})
+
+var anotherCat = Object.create(cat);
+anotherCat.say(); 
+var anotherTiger = Object.create(tiger);
+anotherTiger.say(); 
+```
+
+new 运算接受一个构造函数和一组调用参数，实际上做了几件事：
+
+*   以构造器的 prototype 属性为原型，创建新对象；
+*   将构造函数的作用域赋给新对象(因此 this 就指向了这个新对象)；
+*   执行构造函数中的代码(为这个新对象添加属性) ；
+*   如果构造函数返回的是对象，则返回，否则返回第一步创建的对象。
+
+接下来我们就封装一个函数来模拟 new 操作符：
+
+```jsx
+function newFunc(fn, ...argv) {
+    const o = {} 
+    o.__proto__ = fn.prototype 
+    const val = fn.apply(o, argv)
+    return typeof val === 'object' ? val : o
+}
+
+function Person(name, age) {
+    this.name = name
+    this.age = age
+    this.say = function() {
+        console.log('hello!')
+    }
+}
+const person = newFunc(Person, 'wy', 18)
+console.log(person.name, person.age) 
+person.say() 
+```
+
+也可以运用ES6 中的一些新特性：
+
+```jsx
+function newFunc(fn, ...argv) {
+    const o = Object.create(fn.prototype)
+    const val = fn.apply(o, argv)
+    return typeof val === 'object' ? val : o;
+}
+
+function Person(name, age) {
+    this.name = name
+    this.age = age
+    this.say = function() {
+        console.log('hello!')
+    }
+    return { 
+        name: name,
+        age: age,
+        say() {
+            console.log('Hi!')
+        }
+    }
+}
+const person = newFunc(Person, 'wy', 18)
+console.log(person.name, person.age) 
+person.say() 
+```
+
+ES5中没有类的概念，所以只能new function搭配，ES6 中加入了新特性 class
+
+```jsx
+class Rectangle {
+  
+  constructor(height, width) {
+    this.height = height;
+    this.width = width;
+  }
+  
+  get area() {
+    return this.calcArea();
+  }
+  
+  calcArea() {
+    return this.height * this.width;
+  }
+}
+```
+
+最重要的是，类提供了**继承能力**：
+
+```jsx
+class Animal {
+  constructor(name) {
+    this.name = name;
+  }
+
+  speak() {
+    console.log(this.name + ' makes a noise.');
+  }
+}
+
+class Dog extends Animal {
+  constructor(name) {
+    super(name); 
+  }
+
+  speak() {
+    console.log(this.name + ' barks.');
+  }
+}
+
+let d = new Dog('Mitzie');
+d.speak(); 
+```
+
+使用 extends 关键字自动设置了 constructor，并且会自动调用父类的构造函数，这是一种更少坑的设计。所以当我们使用类的思想来设计代码时，应该尽量使用 class 来声明类，而不是用旧语法，拿函数来模拟对象。

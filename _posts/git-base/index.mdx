@@ -1,0 +1,27 @@
+---
+title: "工作中git的常用指令总结"
+description: "git的常用指令"
+date: "2019-12-23"
+tag: '日常'
+---
+
+
+### git的一些常用指令
+
+1.cd
+2.git remote -v 检查你是否已有连接的远程仓库
+git remote remove origin 取消连接
+3.git remote add origin https://... 连接本地仓库和远程仓库
+4.git pull origin 远程分支名:master 更新自己的代码到最新版
+5.修改bug或者添加功能
+6.git add -A
+7.git commit -m "注释"
+8.git push origin master:远程分支名
+
+#### 遇到冲突时：
+
+git pull --rebase 拉下来master的代码 解决冲突后再
+git rebase --continue
+#### 其他：
+
+git branch -D 分支名 强行删除本地的分支

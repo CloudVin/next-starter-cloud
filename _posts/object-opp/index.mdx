@@ -1,0 +1,296 @@
+---
+title: "【JavaScript】面向对象，object.defineProperty详解"
+description: ""
+date: "2020-1-5"
+tag: 'JavaScript'
+---
+
+### 对象的基本特征
+
+- 对象具有唯一标识性：即使完全相同的两个对象，也并非同一个对象。
+- 对象有状态：同一对象可能处于不同状态之下。
+- 对象有行为：对象的状态可能因为它的行为产生变迁。
+
+#### 第一个特征：
+
+```jsx
+var o1 = {a : 1};
+var o2 = {a : 1};
+console.log(o1 == o2); //false
+
+```
+
+#### 第二个和第三个特征：
+
+  <table  style={{
+                
+                  borderCollapse: 'collapse',
+                 borderSpacing: 0,emptyCells: 'show',
+                 border: '2px solid #cbcbcb',
+                 textAlign: 'center'}}>
+    <thead style={{fontWeight:'bold',
+                  borderBottom: '1px solid #cbcbcb',
+                  backgroundColor: '#eeeeee'}}>
+      <tr >
+          {
+            ['JS','c++','java'].map((item)=>{
+              return (
+                <td key={item} style={{borderLeft: '1px solid #cbcbcb',
+                                        borderBottom: '1px solid #cbcbcb',
+                                        borderWidth: '0 0 0 1px',
+                                        padding: '8px',
+                                        }}>{item}</td>
+              )
+            })
+          }
+          
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+          {
+            ['状态','成员变量','属性'].map((item)=>{
+              return (
+                <td key={item} style={{borderLeft: '1px solid #cbcbcb',
+                                        borderWidth: '0 0 0 1px',
+                                        borderBottom: '1px solid #cbcbcb',
+                                        padding: '8px',
+                                        textAlign: 'center'}}>{item}</td>
+              )
+            })
+          }
+      </tr>
+      <tr>
+          {
+            ['行为','成员函数','方法'].map((item)=>{
+              return (
+                <td key={item} style={{borderLeft: '1px solid #cbcbcb',
+                                        borderWidth: '0 0 0 1px',
+                                        borderBottom: '1px solid #cbcbcb',
+                                        padding: '8px',
+                                        textAlign: 'center'}}>{item}</td>
+              )
+            })
+          }
+      </tr>
+    </tbody>
+  </table>
+
+
+js中状态和行为统一抽象为“属性”
+
+```jsx
+var o = {
+  f: 1,
+  f() {
+    console.log(this.d);
+  }
+}
+```
+o是对象，d和函数f，尽管写法不太相同，但是在js中就都是普通属性。
+
+#### JS中对象独有特征
+
+对象具有高度的动态性，因为js赋予了使用者在运行时为对象添加状态和行为的能力。
+```jsx
+var o = {a : 1};
+o.b = 2;
+console.log(o.a,o.b); // 1 2
+```
+#### JS对象的两类属性
+
+js属性并非知识简单的名称和值，js用一组特征(attribute)来描述属性(property)
+
+第一类属性：数据属性
+
+它具有四个特征：
+
+* value: 属性的值。
+* writable: 决定属性能否被赋值。
+* enumerable: 决定for in能否枚举该属性。
+* configurable: 决定该属性能否被删除或者改变特征值。
+
+#### 第二类属性：访问器(getter/setter)属性
+它也具有四个特征：
+
+* getter: 函数或undefined，在取属性值时被调用。
+* setter: 函数或undefined，在设置属性值时被调用。
+* enumerable: 决定for in能否枚举该属性。
+* configurable: 决定该属性能否被删除或者改变特征值。
+ 访问器属性使得属性在读和写时执行代码，它允许使用者在写和读属性时，得到完全不同的值，它可以视为一种函数的语法糖。
+
+我们通常在用代码定义属性时，会产生数据属性。其中的writable、enumerable、configurable 都默认为 true。
+
+使用对象字面量创建的属性，writable、enumerable和configurable特性默认为true。
+
+我们可以使用内置函数 Object.getOwnPropertyDescripter 来查看 ：
+```jsx
+var o = { a: 1 };
+o.b = 2;
+//a和b皆为数据属性
+console.log(Object.getOwnPropertyDescriptor(o,"a"))
+// {value: 1, writable: true, enumerable: true, configurable: true}
+console.log(Object.getOwnPropertyDescriptor(o,"b"))
+// {value: 2, writable: true, enumerable: true, configurable: true}
+```
+如果我们要想改变属性的特征，或者定义访问器属性，我们可以使用 Object.defineProperty:
+在使用Object.defineProperty、Object.defineProperties 或 Object.create 函数的情况下添加数据属性，writable、enumerable和configurable默认值为false。
+
+MDN官网对用Object.defineProperty的介绍
+
+> Object.defineProperty() 方法会直接在一个对象上定义一个新属性，或者修改一个对象的现有属性，并返回此对象。
+> **语法：**
+> Object.defineProperty(obj, prop, descriptor)
+> **参数：**
+> obj:要被定义的属性对象； prop:要定义或修改的属性的名称或 Symbol； descriptor:要定义或修改的属性描述符 
+> **返回值：**
+> 被传递给函数的对象
+> **描述：***
+> 对象里目前存在的属性描述符有两种主要形式：**数据描述符**和**存取描述符**。数据描述符是一个具有值的属性，该值可以是可写的，也可以是不可写的。存取描述符是由 getter 函数和 setter 函数所描述的属性。<span style={{color:'pink'}}>**一个描述符只能是这两者其中之一，不能同时是两者**。</span>
+
+> 这两种描述符都是对象。它们共享以下可选键值（默认值是指在使用 Object.defineProperty() 定义属性时的默认值）：
+> **configurable**
+> 当且仅当该属性的 configurable 键值为 true 时，该属性的描述符才能够被改变，同时该属性也能从对应的对象上被删除。默认为 false。
+> **enumerable**
+> 当且仅当该属性的 enumerable 键值为 true 时，该属性才会出现在对象的枚举属性中。默认为 false。
+<div><span style={{color:'skyblue'}}>**数据描述符还具有以下可选值:**</span></div>
+> **value**
+>  该属性对应的值。可以是任何有效的 JavaScript 值（数值，对象，函数等）。
+默认为 undefined。
+> **writable**
+> 当且仅当该属性的 writable 键值为 true 时，属性的值，也就是上面的 value，才能被赋值运算符改变。
+默认为 false。
+<div><span style={{color:'skyblue'}}>**存取描述符还具有以下可选值:**</span></div>
+> **get**
+> 属性的 getter 函数，如果没有 getter，则为 undefined。当访问该属性时，会调用此函数。执行时不传入任何参数，但是会传入 this 对象（由于继承关系，这里的this并不一定是定义该属性的对象）。该函数的返回值会被用作属性的值。
+默认为 undefined。
+> **set**
+> 属性的 setter 函数，如果没有 setter，则为 undefined。当属性值被修改时，会调用此函数。该方法接受一个参数（也就是被赋予的新值），会传入赋值时的 this 对象。
+默认为 undefined。
+> **描述符默认值汇总**
+> 拥有布尔值的键 configurable、enumerable 和 writable 的默认值都是 false。
+> 属性值和函数的键 value、get 和 set 字段的默认值为 undefined。
+
+<div style={{width: '100%',
+            overflow: 'auto',
+}}>
+  <table style={{ 
+                  width:'100%',
+                  borderCollapse: 'collapse',
+                 borderSpacing: 0,emptyCells: 'show',
+                 border: '2px solid #cbcbcb',
+                 textAlign: 'center'}}>
+    <thead style={{fontWeight:'bold',
+                  borderBottom: '1px solid #cbcbcb',
+                  backgroundColor: '#eeeeee'}}>
+      <tr >
+          {
+            [' ','configurable','enumerable','value','writable','get','set'].map((item)=>{
+              return (
+                <td key={item} style={{borderLeft: '1px solid #cbcbcb',
+                                        borderBottom: '1px solid #cbcbcb',
+                                        borderWidth: '0 0 0 1px',
+                                        padding: '8px',
+                                        }}>{item}</td>
+              )
+            })
+          }
+          
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+          {
+            ['数据描述符','可以','可以','可以','可以','不可以','不可以'].map((item)=>{
+              return (
+                <td key={item} style={{borderLeft: '1px solid #cbcbcb',
+                                        borderWidth: '0 0 0 1px',
+                                        borderBottom: '1px solid #cbcbcb',
+                                        padding: '8px',
+                                        textAlign: 'center'}}>{item}</td>
+              )
+            })
+          }
+      </tr>
+      <tr>
+          {
+            ['存取描述符','可以','可以','不可以','不可以','可以','可以'].map((item)=>{
+              return (
+                <td key={item} style={{borderLeft: '1px solid #cbcbcb',
+                                        borderWidth: '0 0 0 1px',
+                                        borderBottom: '1px solid #cbcbcb',
+                                        padding: '8px',
+                                        textAlign: 'center'}}>{item}</td>
+              )
+            })
+          }
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+```jsx
+var o = { a: 1 }; 
+Object.defineProperty(o, "b", {value: 2, writable: false, enumerable: false,configurable: true}); 
+//a和b都是数据属性，但特征值变化了 
+Object.getOwnPropertyDescriptor(o,"a"); 
+//{value: 1, writable: true, enumerable: true, configurable: true} Object.getOwnPropertyDescriptor(o,"b"); 
+//{value: 2, writable: false, enumerable: false, configurable: true} 
+o.b = 3; //这时想重新赋值
+console.log(o.b); // 2，因为writable被改为了false
+```
+在创建对象时，也可以使用 get 和 set 关键字来创建访问器属性
+```jsx
+var o = {
+  get a() {
+    return 1
+  }
+};
+console.log(o.a); //1
+```
+js对象运行时是一个“属性的集合”：
+
+<table style={{borderCollapse: 'collapse',
+               borderSpacing: 0,emptyCells: 'show',
+               border: '2px solid #cbcbcb',
+               textAlign: 'center'}}>
+  <thead style={{fontWeight:'bold',
+                borderBottom: '1px solid #cbcbcb',
+                backgroundColor: '#eeeeee'}}>
+    <tr >
+        {
+          ['key','value'].map((item)=>{
+            return (
+              <td key={item} style={{borderLeft: '1px solid #cbcbcb',
+                                      borderBottom: '1px solid #cbcbcb',
+                                      borderWidth: '0 0 0 1px',
+                                      padding: '8px',
+                                      }}>{item}</td>
+            )
+          })
+        }
+        
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+        {
+          ['字符串/Symbol','数据属性特征值/访问器属性特征值'].map((item)=>{
+            return (
+              <td key={item} style={{borderLeft: '1px solid #cbcbcb',
+                                      borderWidth: '0 0 0 1px',
+                                      borderBottom: '1px solid #cbcbcb',
+                                      padding: '8px',
+                                      textAlign: 'center'}}>{item}</td>
+            )
+          })
+        }
+    </tr>
+  </tbody>
+</table>
+
+以上面的对象 o 为例:
+
+key:a
+
+value:{writable:true,value:1,configurable:true,enumerable:true}

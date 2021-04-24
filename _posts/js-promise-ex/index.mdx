@@ -1,0 +1,402 @@
+---
+title: "【JavaScript】异步操作"
+description: ""
+date: "2020-8-8"
+tag: 'JavaScript'
+---
+
+先执行func1()，执行成功后callback()告知，再执行func2()。
+
+```js
+var func1 = function(callback){
+    console.log(1);
+    (callback && typeof(callback)==='function') && callback();
+}
+var func2 = function(){
+    console.log(2);
+}
+func1(func2);
+
+```
+
+异步回调中最常见的形式是Ajax。
+
+```js
+$.ajax({
+    url:"/getmsg",
+    type: 'GET',
+    dataType: 'json',
+    success: function(ret) {
+        if (ret && ret.status) {
+            
+        }
+    },
+    error: function(xhr) {
+        
+    }
+})
+```
+
+```js
+var elem = document.querySelector('#div');
+var event = document.createEvent('Event');
+event.initEvent('myEvent', true, true); 
+elem.addEventListener('myEvent', function (e) { 
+  console.log('触发事件');
+  console.log(e);
+}, false);
+elem.dispatchEvent(event);  
+
+
+```
+
+它定义对象间的一对多的依赖关系，当一个对象的状态发生改变时，所有依赖于它的对象都将得到通知
+
+```js
+
+
+let pubsub = {};
+(function(myObj) {
+    topics = {}
+    subId = -1;
+    
+    myObj.publish = function(topic, msg) {
+            
+            if (!topics[topic]) {
+                return
+            }
+            
+            let subs = topics[topic]
+            subs.forEach(function(sub) {
+                sub.func(topic, msg)
+            })
+        }
+    
+    myObj.subscribe = function(topic, func) {
+        
+        if (!topics[topic]) {
+            topics[topic] = []
+        }
+        
+        let token = (++subId).toString()
+        topics[topic].push({
+                token: token,
+                func: func
+            })
+        return token
+    }
+    myObj.unsubscribe = function(token) {
+        
+        for (let t in topics) {
+            
+            if (!topics[t]) {
+                return }
+            topics[t].forEach(function(sub,index) {
+                if (sub.token === token) {
+                    
+                    topics[t].splice(index, 1)
+                }
+            })
+        }
+    }
+})(pubsub)
+
+let sub1 = pubsub.subscribe('Msg::Name', function(topic, msg) {
+    console.log("event is :" + topic + "; data is :" + msg)
+});
+let sub2 = pubsub.subscribe('Msg::Name', function(topic, msg) {
+    console.log("this is another subscriber, data is :" + msg)
+});
+pubsub.publish('Msg::Name', '123')
+
+pubsub.unsubscribe(sub2)
+pubsub.publish('Msg::Name', '456')
+
+
+
+```
+
+其中存储消息的结构用json可以表示为：
+
+```js
+topics = {
+  Msg::Name: [{
+    token: 0,
+    func: function(topic, msg) {
+      console.log("event is :" + topic + "; data is :" + msg)
+    }
+  }, {
+    token: 1,
+    func: function(topic, msg) {
+      console.log("this is another subscriber, data is :" + msg)
+    }
+  }],
+  topic2: [{ token: 2, func: callback3 }, { token: 3, func: callback4 }],
+  topic3: []
+}
+```
+
+消息池的结构是发布订阅模式与事件监听模式的最大区别。每个消息也可以看做是一个个的事件，topics对象就相当于一个事件处理中心，每个事件都有各自的订阅者。_事件监听其实就是发布订阅模式的一个简化版本。_
+
+而发布订阅模式的优点就是我们可以查看消息中心的信息，了解有多少信号，每个信号有多少订阅者。
+
+很多情况下，我们都将观察者模式和发布-订阅模式混为一谈，因为都可用来进行异步通信，实现代码的解耦，而不再细究其不同，但是内部实现还是有很多不同的。
+
+1.  **整体模型**的不同：发布订阅模式是靠信息池作为发布者和订阅者的中转站的，订阅者订阅的是信息池中的某个信息；而观察者模式是直接将订阅者订阅到发布者内部的，目标对象需要负责维护观察者，也就是观察者模式中订阅者是依赖发布者的。
+2.  **触发回调的方式**不同：发布-订阅模式中，订阅者通过监听特定消息来触发回调；而观察者模式是发布者暴露一个接口(方法)，当目标对象发生变化时调用此接口，以保持自身状态的及时改变。
+
+观察者模式很好的应用是MVC架构，当数据模型更新时，视图也发生变化。从数据模型中将视图解耦出来，从而减少了依赖。但是当观察者数量上升时，性能会有显著下降。
+
+```js
+
+var Subject=function(){
+    this.observers=[];
+}
+Subject.prototype={
+    subscribe:function(observer){
+        this.observers.push(observer);
+    },
+    unsubscribe:function(observer){
+        var index=this.observers.indexOf(observer);
+        if (index>-1) {
+            this.observers.splice(index,1);
+        }
+    },
+    notify:function(observer,msg){
+        var index=this.observers.indexOf(observer);
+        if (index>-1) {
+            this.observers[index].notify(msg)
+        }
+    },
+    notifyAll:function(msg){
+        console.log(msg) 
+        this.observers.forEach(function(observe,msg){
+            console.log(msg) 
+            observe.notify(msg) 
+        })
+    }
+}
+var Observer=function(){
+    return {
+        notify:function(msg){
+            console.log("received: "+msg);
+        }
+    }
+}
+var subject=new Subject();
+var observer0=new Observer();
+var observer1=new Observer();
+var observer2=new Observer();
+var observer3=new Observer();
+subject.subscribe(observer0);
+subject.subscribe(observer1);
+subject.subscribe(observer2);
+subject.subscribe(observer3);
+subject.notifyAll('all notified'); 
+subject.notify(observer2,'asda'); 
+```
+
+Promise，就是一个**对象**，用来传递异步操作的消息。
+
+Promise 对象代表一个异步操作，有**三种状态**：`Pending`（进行中）、`Resolved`（已完成，又称 Fulfilled）和 `Rejected`（已失败）。
+
+只有异步操作的结果，可以决定当前是哪一种状态，任何其他操作都无法改变这个状态。这也是 Promise 这个名字的由来，它的英语意思就是「承诺」，表示其他手段**无法改变**。
+
+**resolve**函数的作用是，将 Promise 对象的状态从 `未处理` 变成 `处理成功` (unresolved => resolved)， 在异步操作成功时调用，并将异步操作的**结果**作为参数**传递出去**。
+
+**reject**函数的作用是，将 Promise 对象的状态从 `未处理` 变成 `处理失败`(unresolved => rejected), 在异步操作失败时调用，并将异步操作报出的**错误**作为参数**传递出去**。
+
+Promise 实例生成以后，可以用 **then** 方法和 **catch** 方法分别指定 resolved 状态和 rejected 状态的**回调函数**。
+
+定义这三个方法，它们是层层依赖的关系，下一步的的操作需要使用上一部操作的结果。（这里使用 setTimeout 模拟异步操作）
+
+```js
+
+function cook(){
+    console.log('开始做饭');
+    var p = new Promise(function(resolve, reject){        
+        setTimeout(function(){
+            console.log('做饭完毕');
+            resolve('鸡蛋炒饭');
+        }, 1000);
+    });
+    return p;
+}
+
+
+function eat(data){
+    console.log('开始吃饭：' + data);
+    var p = new Promise(function(resolve, reject){        
+        setTimeout(function(){
+            console.log('吃饭完毕');
+            resolve('一块碗一双筷子');
+        }, 2000);
+    });
+    return p;
+}
+
+function wash(data){
+    console.log('开始洗碗：' + data);
+    var p = new Promise(function(resolve, reject){        
+        setTimeout(function(){
+            console.log('洗碗完毕');
+            resolve('干净的碗筷');
+        }, 2000);
+    });
+    return p;
+}
+```
+
+使用 then 链式调用这三个方法：
+
+```js
+cook()
+.then(function(data){
+    return eat(data);
+})
+.then(function(data){
+    return wash(data);
+})
+.then(function(data){
+    console.log(data);
+});
+
+cook()
+.then(eat)
+.then(wash)
+.then(function(data){
+    console.log(data);
+});
+
+开始做饭
+做饭完毕
+开始吃饭：鸡蛋炒饭
+吃饭完毕
+开始洗碗：一块碗一双筷子
+洗碗完毕
+干净的碗筷
+```
+
+```js
+function takeLongTime(n){
+    return new Promise(resolve=>{
+        setTimeout(()=>resolve(n+200),n)
+    })
+}
+
+function step1(n){
+    console.log(`step1 with ${n}`);
+    return takeLongTime(n);
+}
+
+function step2(n){
+    console.log(`step2 with ${n}`);
+    return takeLongTime(n);
+}
+
+function step3(n){
+    console.log(`step3 with ${n}`);
+    return takeLongTime(n);
+}
+```
+
+使用Promise的方式将其3个步骤处理为链式操作，每一步都返回一个promise对象，将输出的结果作为下一步新的输入：
+
+```js
+function dolt(){
+    console.time('dolt');
+    const time1=300;
+    step1(time1)
+    .then(time2=>step2(time2))
+    .then(time3=>step3(time3))
+    .then(result=>{
+        console.log(`result is ${result}`);
+        console.timeEnd('dolt')
+    });
+}
+dolt();
+
+step1 with 300
+step2 with 500
+step3 with 700
+result is 900
+dolt: 1506.291ms
+```
+
+缺点：对于长的链式操作来说，看起来是一堆then方法的堆砌，代码冗余，语义也不清楚，靠着箭头函数才使得代码略微简短一些。还有一个痛点，就是传递参数太麻烦，尤其是需要传递多参数的情况下。
+
+generator是一个封装的异步任务，在需要暂停的地方，使用yield语句注明。
+
+```js
+function* gen(x){
+    let y=yield x+2;
+    return y;
+}
+let g=gen(1);
+g.next(); 
+g.next(); 
+```
+
+调用generator函数返回的是内部的指针对象，调用next方法就会移动内部指针。Generator函数之所以能被用来处理异步操作，因为它可以暂停执行和恢复执行、函数体内外的数据交换和错误处理机制。
+
+```js
+function* dolt(){
+    console.time('dolt');
+    const time1 = 300;
+    const time2 = yield step1(time1);
+    const time3 = yield step2(time2);
+    const result = yield step3(time3);
+    console.log(`result is ${result}`);
+    console.timeEnd('dolt');
+}
+
+function spawn(genF) {
+  return new Promise(function(resolve, reject) {
+    var gen = genF();
+    function step(nextF) {
+      try {
+        var next = nextF();
+      } catch(e) {
+        return reject(e); 
+      }
+      if(next.done) {
+        return resolve(next.value);
+      } 
+      Promise.resolve(next.value).then(function(v) {
+        step(function() { return gen.next(v); });      
+      }, function(e) {
+        step(function() { return gen.throw(e); });
+      });
+    }
+    step(function() { return gen.next(undefined); });
+  });
+}
+spawn(dolt); 
+```
+
+async函数基于Generator又做了几点改进：
+
+*   内置执行器，将Generator函数和自动执行器进一步包装。
+    
+*   语义更清楚，async表示函数中有异步操作，await表示等待着紧跟在后边的表达式的结果。
+    
+*   适用性更广泛，await后面可以跟promise对象和原始类型的值(Generator中不支持)
+    
+
+它基于Promise使用async/await来优化then链的调用,其实也是Generator函数的语法糖。 async 将其后的函数（函数表达式或 Lambda）的返回值封装成一个 Promise 对象， await 会等待这个 Promise 完成，并将其 resolve 的结果返回出来。
+
+```js
+async function dolt(){
+    console.time('dolt');
+    const time1=300;
+    const time2=await step1(time1);
+    const time3=await step2(time2);
+    const result=await step3(time3);
+    console.log(`result is ${result}`);
+    console.timeEnd('dolt');
+}
+
+dolt(); 
+```
+
+await只能用在async函数中，否则会报错。

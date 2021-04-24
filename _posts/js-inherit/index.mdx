@@ -1,0 +1,325 @@
+---
+title: "【JavaScript】js实现继承的几种方式"
+description: ""
+date: "2020-6-12"
+tag: 'JavaScript'
+---
+
+**步骤**：
+
+1）定义父类型构造函数
+
+2）给父类型的原型添加方法
+
+3）定义子类型的构造函数
+
+4）创建父类型的实例对象赋给子类型的原型
+
+5）将子类型原型的构造属性设置为子类型（没有这一步也不影响继承，但是 constructor 的指向是错误的）
+
+6）给子类型原型添加方法
+
+7）创建子类型的实例对象：可以调用父类型的方法
+
+**关键**：**将父类的一个实例对象作为子类的原型**
+
+```null
+function Parent() {
+  this.name = 'wo'
+  this.gender = '男'
+  this.list = [1, 2, 3]
+}
+Parent.prototype.eat = function () {
+  console.log('晚餐时间到')
+}
+function Child(age) {
+  this.age = age
+}
+Child.prototype = new Parent() 
+Child.prototype.constructor = Child 
+Child.prototype.sleep = function () {
+  console.log('睡觉时间到')
+}
+
+var child = new Child(20)
+var child2 = new Child(30)
+child.eat() 
+
+console.log(child.list) 
+console.log(child2.list) 
+child.list.push(4)
+console.log(child.list) 
+console.log(child2.list) 
+```
+
+**缺点**：
+
+因为 Child 的原型对象都是 New Parent，所以实例化出来的对象的属性都是一样的。Parent 上面的**引用类型**的属性只要有一个实例对象修改了，其他也会跟着修改。因为他们原型对象都是共用的。并且创建子类实例时，无法向父类构造函数传参。
+
+**步骤**：
+
+1）定义父类型构造函数
+
+2）定义子类型构造函数
+
+3）在子类型构造函数中调用 call 或 apply 把 Parent 的 this 指向改变为是 Child 的 this 指向。这样就可以实现复制父类的实例属性给子类。
+
+**关键**：**在子类型构造函数中通过 call 调用父类型构造函数**
+
+```null
+function Parent(name, age) {
+  this.name = name
+  this.age = age
+}
+Parent.prototype.sayHi = function () {
+  console.log('hello')
+}
+function Child(name, age, gender) {
+  Parent.call(this, name, age) 
+  this.gender = gender
+}
+let child = new Child('王', 20, '男')
+console.log(child.name, child.age) 
+child.sayHi() 
+```
+
+**优点**：可以向父类传递参数，而且解决了原型链继承中父类属性使用 this 声明的引用类型属性会在所有实例共享的问题。
+
+**缺点**：只能解决父类型上的属性和方法的继承，但是父类型原型上的不能继承
+
+组合上述两种方法，用**原型链**实现对原型属性和方法的继承，用**构造函数**技术来实现实例属性的继承。（常用）
+
+```null
+function Parent(name) {
+  this.name = name
+}
+Parent.prototype.say = function () {
+  console.log('say')
+}
+
+function Child(name, age) {
+  Parent.call(this, name) 
+  this.age = age
+}
+Child.prototype = new Parent() 
+Child.prototype.constructor = Child 
+
+const c = new Child('wy', 18)
+c.say() 
+```
+
+**优点**：
+
+1)可以继承父类原型上的属性，可以传参，可复用。
+
+2)每个新子类对象实例引入的构造函数属性是私有的。
+
+**缺点**：
+
+1)两次调用父类函数（new Parent() 和 Parent.call(this)），造成一定的性能损耗。
+
+2)在使用子类创建实例对象时，其原型中会存在两份相同属性/方法的问题。
+
+是组合式的优化
+
+```null
+var Parent = {
+  name: 'jacky',
+  age: 22,
+  courses: ['前端'],
+}
+var child = Object.create(Parent)
+var child2 = Object.create(Parent)
+child.courses.push('后端')
+child2.courses.push('全栈')
+
+console.log(child2.courses) 
+```
+
+**优点**：解决了组合式继承中，父类的构造函数被调用了两次，会产生两组相同属性，一组在实例上 一组在原型上的问题。
+
+**缺点**：与原型链继承一样。多个实例共享被继承对象的属性，存在篡改的可能。
+
+```null
+function create(o) {
+    function F() {} 
+    F.prototype = o 
+    return new F() 
+}
+```
+
+仅仅就是把组合式中的 new Parent() 替换为了原型式 Object.create()，这样就解决了引用类型值的属性会共享的问题
+
+```null
+function Parent(name, courses) {
+  this.name = name
+  this.courses = courses
+}
+Parent.prototype.say = function () {
+  console.log('say')
+}
+
+function Child(name, age, courses) {
+  Parent.call(this, name, courses)
+  this.age = age
+}
+Child.prototype = Object.create(Parent.prototype) 
+Child.prototype.constructor = Child
+
+const c = new Child('wy', 18, [1])
+const c2 = new Child('woo', 18, [1])
+console.log(c.courses) 
+console.log(c2.courses) 
+c.courses.push(2)
+console.log(c.courses) 
+console.log(c2.courses) 
+```
+
+仅仅在原型式继承的基础上，创建一个封装继承过程的函数（创建、增强、返回）
+
+使用场景：专门为对象来做某种固定方式的增强。
+
+```null
+function createAnother(o) {
+  var clone = Object.create(o)
+  clone.say = function () {
+    
+    console.log('say')
+  }
+  return clone
+}
+
+var Parent = {
+  name: 'jacky',
+  age: 22,
+  courses: ['前端'],
+}
+
+var child = createAnother(Parent)
+var child2 = createAnother(Parent)
+child.courses.push('后端')
+
+console.log(child2.courses) 
+child2.say() 
+```
+
+**优点**：没有创建自定义构造函数类型，因为只是套了个壳子增加特定属性/方法返回对象，以达到增强对象的目的
+
+**缺点**：同原型链继承相同，多个实例的引用类型属性指向相同，存在篡改的可能，也无法传递参数
+
+借用**寄生式**实现封装，**组合式**实现继承。（**构造函数**（call）传递参数并实现继承父类自身属性/方法+ **原型式**（Object.create()）实现继承父类原型的属性/方法）
+
+```null
+function Parent(name) {
+    this.name = name
+}
+Parent.prototype.say = function () {
+    console.log('say')
+}
+
+function Child(name, age) {
+    Parent.call(this, name) 
+    this.age = age
+}
+
+
+function inheritPrototype(child, parent) {
+    var clone = Object.create(parent.prototype) 
+    clone.constructor = child 
+    child.prototype = clone 
+}
+inheritPrototype(Child, Parent); 
+
+
+Child.prototype.eat = function(){
+    console.log('eat')
+}
+
+var c = new Child('wy', 18)
+c.say() 
+c.eat() 
+
+
+```
+
+**优点**：
+
+1）只调用一次父类 Parent 构造函数。不必为了指定子类的原型而调用构造函数，而是间接的使用原型式继承 Object.create 让 Parent.prototype 赋给 Child.prototype。保持了原型链上下文不变， instanceof 和 isPrototypeOf() 也能正常使用。
+
+2）避免在子类 prototype 上创建多余的属性（父类自身属性 name）。
+
+3）寄生组合式继承是最成熟的继承方法，也是现在最常用的继承方法，众多 JS 库采用的继承方案也是它。
+
+还可以这样写：
+
+```null
+function Parent(value) {
+  this.val = value
+}
+Parent.prototype.getValue = function() {
+  console.log(this.val)
+}
+
+function Child(value) {
+  Parent.call(this, value)
+}
+Child.prototype = Object.create(Parent.prototype, {
+  constructor: {
+    value: Child, 
+    enumerable: false,
+    writable: true,
+    configurable: true
+  }
+})
+
+const child = new Child(1)
+
+child.getValue() 
+child instanceof Parent 
+```
+
+```null
+class Father {
+  constructor(name, age) {
+    this.name = name
+    this.age = age
+  }
+  skill() {
+    console.log('父类的技能')
+  }
+}
+
+class Son extends Father {
+  constructor(name, age, job) {
+    super(name, age) 
+    this.job = job
+  }
+
+  getInfo() {
+    console.log(this.name, this.age, this.job)
+  }
+}
+
+let son = new Son('jacky', 22, '前端开发')
+son.skill() 
+son.getInfo() 
+```
+
+子类必须在 constructor 方法中调用 super 方法，否则新建实例时会报错。因为子类没有自己的 this 对象，必须先通过父类的构造函数完成塑造，得到与父类同样的实例属性和方法，然后再对其进行加工，加上子类自己的实例属性和方法。如果不调用 super 方法，子类就得不到 this 对象。
+
+1.  借助原型链实现继承：`Child.prototype = new Parent()`
+    
+2.  借助构造函数实现继承：`Parent.call(this)`
+    
+3.  组合式继承：综合上面两种方式，既有 `Child.prototype = new Parent()` 又有 `Parent.call(this)`
+    
+4.  原型式继承：优化版组合式，将 `new Parent()` 改为 `Object.create(Parent.prototype)`
+    
+5.  寄生式继承：在原型式外面套了个函数壳子（创建、增强、返回）
+    
+6.  寄生-组合式：寄生式 + 构造函数的 call + 原型式的 Object.create()
+    
+
+1.  ES5 的继承实质上是先创建子类的实例对象，再将父类的方法添加到 this 上( Father.call(this) )。
+2.  ES6 的继承是先创建父类的实例对象 this，再用子类的构造函数修改 this。
+3.  因为子类没有自己的 this 对象，所以必须先调用父类的 super() 方法。

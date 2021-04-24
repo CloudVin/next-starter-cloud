@@ -1,0 +1,262 @@
+---
+title: "React实现一个选择器组件，并实现heckbox的全选，半选"
+description: ""
+date: "2021-3-9"
+tag: 'react'
+---
+
+最近遇到一个业务上的需求，实现一个选择器组件，组件的需求大致如下图：
+
+<img src='/assets/table.png'/>
+
+### 代码实现
+
+```jsx
+import React,{useState,useRef} from "react";
+import "./styles.css";
+import Tag from './tag'
+
+function Selector(props) {
+  // 完善这里的代码
+const {filterComponent,tableColumns,dataReq}=props
+
+const [checkedList,setCheckedList]=useState([])
+const [checkboxList,setCheckboxList]=useState(dataReq)
+// console.log(checkboxList);
+
+const checkboxRef=useRef();
+//全选checked  change事件
+const handleAllChange=(e)=>{
+  // console.log(e.target.checked)
+
+  if(e.target.checked){
+    // console.log(e.target.checked)
+        const newArr =checkboxList.map(item => {
+         item.checked=true
+         return item
+      })
+        setCheckboxList(newArr)
+        setCheckedList([...checkboxList])
+    }
+    else{
+  // console.log(e.target.checked)
+      const newArr =checkboxList.map(item => {
+    item.checked=false
+    return item
+    })
+      setCheckboxList(newArr)
+      setCheckedList([])
+
+    }
+  }
+//checkbox item change事件监听
+const handleChange=(e,index)=>{
+  // 判断半选
+  // checkboxRef.current.indeterminate=true
+  checkboxList[index].checked=e.target.checked
+  let i= 0;
+  checkboxList.forEach(item=>{
+      if(item.checked){
+        i++;
+        
+      }
+      if(i===checkboxList.length){
+        checkboxRef.current.checked=true;
+        checkboxRef.current.indeterminate=false;
+        
+
+      }else if(i===0){
+        checkboxRef.current.checked=false;
+        checkboxRef.current.indeterminate=false;
+      
+
+      }else{
+        checkboxRef.current.indeterminate=true;
+        
+      }
+
+  })
+
+  const newCheckdeList=checkboxList.filter(item=>{
+    return item.checked
+  })
+  setCheckedList(newCheckdeList)
+  setCheckboxList([...checkboxList])
+
+}
+
+ //清除所有已选择 
+const handleCealerAll=()=>{
+  setCheckedList([])
+  checkboxRef.current.checked=false;
+  checkboxList.forEach(item=>{
+    item.checked=false
+  })
+  setCheckboxList([...checkboxList])
+}
+  
+
+  return (
+    <div>
+      <h3 className='head'>请选择会员</h3>
+      <div className='table'>
+          <div className='search'></div>
+            <div className='table-content'>
+             {
+              <table>
+                <thead>
+                  <tr>
+                    <th><input id='checkedAll'
+                    ref={checkboxRef}
+                    onChange={e=>{handleAllChange(e)}} 
+                    type={filterComponent.type}/></th>
+                    <th>{tableColumns.title}</th>
+                    <th>{tableColumns.type}</th>
+                  </tr>
+                </thead>
+                <tbody>
+                {
+                  checkboxList.map((item,index)=>{
+                    return (
+                        <tr key={item.title}>
+                          <td>
+                            <input
+                          checked={item.checked}
+                          name='one'   
+                          onChange={(e)=>handleChange(e,index)}
+                          type={filterComponent.type}/>
+                          </td>
+                          <td>{item.title}</td>
+                          <td>{item.type}</td>
+                        </tr>  
+                    )
+                  })
+                }
+                </tbody>
+              </table>
+             }
+            </div> 
+     <div className='selected'>
+        <div className='selected-head'>
+              <div>已选择({checkedList.length})</div>
+              <div className='clear' onClick={e=>{handleCealerAll()}}>清空</div> 
+        </div>
+          <div className='selected-item'>
+            {
+              checkedList.map(item=>{
+                return(
+                  <Tag key={item.title} title={item.title}/>
+                )
+              })
+            }
+          </div>     
+    </div> 
+  </div>
+      <div className='secletor-bottom'>
+        <div>
+          <button>取消</button>
+          <button onClick={e=>{alert('123')}}>确认</button>
+
+        </div>
+      </div>
+
+    </div>
+  );
+}
+
+
+
+export default function App() {
+  return (
+    <div className="App">
+      <Description data='s'/>
+      <Selector
+        filterComponent={{type:'checkbox'}}
+        tableColumns={{
+          title:'会员名称',
+          type:'类型'  
+        }}
+
+        dataReq={[{title:'会员1',type:'自定义',checked:false},{title:'会员2',type:'自定义',checked:false},{title:'会员3',type:'自定义',checked:false},{title:'会员4',type:'自定义',checked:true}]}
+ 
+      />
+      
+    </div>
+  );
+}
+
+```
+
+因为用户传入的属性不固定，为了让组件低耦合高内聚，所以循环不能写死
+
+过滤掉对象不要的属性
+
+使用lodash的omit和pick方法，当然也可以自己封装工具函数
+
+```js
+/ 中规中矩式
+const omit = (obj, uselessKeys) =>{
+   Object.keys(obj).reduce((acc, key) =>{
+      return uselessKeys.includes(key) ?
+        acc : 
+        {...acc, [key]: acc[key]}
+   }, {})
+ }
+
+
+// 投机取巧式
+const omit = (obj, uselessKeys) =>
+  uselessKeys.reduce((acc, key) => {
+    return {...acc, [key]: undefined}
+  }, obj)
+
+
+// 粗暴式
+const omit = (obj, uselessKeys) => {
+  uselessKeys.forEach(key => {
+    delete obj[key]
+  })
+  return obj
+}
+
+```
+
+css样式
+
+```css
+input[type=checkbox] {
+  margin-right: 5px;
+  cursor: pointer;
+  font-size: 14px;
+  width: 15px;
+  height: 12px;
+  position: relative;
+}
+
+input[type=checkbox]:after {
+  position: absolute;
+  width: 10px;
+  height: 15px;
+  top: 0;
+  content: " ";
+  background-color: #ff0000;
+  color: #fff;
+  display: inline-block;
+  visibility: visible;
+  padding: 0px 3px;
+  border-radius: 3px;
+}
+input[type=checkbox]:checked:after{
+ content: "■";
+  font-size: 12px;
+  color:orange;
+  backgournd:white;
+}
+input[type=checkbox]:checked:after {
+  content: "✓";
+  font-size: 12px;
+  background:orange;
+  color:white;
+}
+```
+

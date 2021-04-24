@@ -1,0 +1,220 @@
+---
+title: "css居中的几种方式"
+description: ""
+date: "2020-12-21"
+tag: 'css'
+---
+
+```null
+<div class="parent">
+    <div class="child"></div>
+</div>
+
+.parent {
+    width: 300px;
+    height: 300px;
+    background-color:blue;
+}
+.child {
+    width: 100px;
+    height: 100px;
+    background-color: red;
+}
+```
+
+要实现的效果是让子元素在父元素中水平垂直居中。
+
+![](https://img-blog.csdnimg.cn/20200811153459793.png)
+
+**仅适用于居中元素固定宽高**
+
+*   absolute + 负 margin
+*   absolute + margin auto
+*   absolute + calc
+
+**居中元素不定宽高**
+
+*   flex
+*   grid
+*   absolute + transform
+*   line-height
+*   text-align + vertical-align + line-height
+*   text-align + vertical-align + table-cell
+*   writing-mode
+
+**该方法适用于知道固定宽高的情况。** （父元素 parent 的 position 设置为 relative，否则 child 的 absolute 无效）
+
+```null
+.parent {
+    position: relative;
+}
+.child {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    margin-top: -50px; 
+    margin-left: -50px; 
+}
+```
+
+利用绝对定位使元素 `top: 50%; left: 50%;` 时，是以左上角为原点定位，所以实现的是**子元素的左上角**为原点处于父元素的中心位置，因为元素自身有一定的高度和宽度，所以元素本身并不居中。
+
+所以，还需要设置 margin-top/margin-left 的值为 child 长/宽一半的负值。或者还可以设为百分比 `-(50px/300px)%` 即 16.6%
+
+**该方法适用于知道固定宽高的情况。** 
+
+与上面的原理差不多。
+
+```null
+.parent {
+    position: relative;
+}
+.child {
+    position: absolute;
+    top: calc(50% - 50px);
+    left: calc(50% - 50px);
+}
+```
+
+> 50px 还可以 写为 16.6%
+
+**该方法适用于知道固定宽高的情况。** 
+
+```null
+.parent {
+    position: relative;
+}
+.child {
+    position: absolute;
+    margin: auto;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    right: 0;
+}
+```
+
+因为对于 absolute 元素来说，`left: 0;right: 0;top: 0;bottom: 0;` 可以实现全屏拉伸，如果同时设置 left 和 right 会水平拉伸，同时设置 top 和 bottom 会垂直拉伸。但由于此时设置了 height/width 为固定值，所以在 `margin: auto` 的情况下，会自动平均分配四周的剩余空间。
+
+```null
+.parent {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+```
+
+`justify-content`：定义项目在主轴（水平）上的对齐方式。
+
+`align-items`：定义项目在交叉轴（垂直）上的对齐方式。
+
+或者：
+
+```null
+.parent {
+      display: flex;
+}
+.child {
+    margin: auto;
+}
+```
+
+> `margin: auto` 在伸缩盒中具有强大的功能。某个方向上定义为 “auto” 的 margin ，它会**计算平均分配这个方向上的剩余空间**，这样其他项目会被挤到其它位置。
+> 
+> 使用了 `margin: auto` 的 flex 子项目，它们父元素设置的 justify-content 以及它们本身的 align-self 将不再生效。
+
+```null
+.parent {
+    display: grid;
+}
+.child {
+    align-self: center;
+    justify-self: center;
+}
+```
+
+`justify-self`：设置单元格内容的水平位置，只作用于单个项目。
+
+`align-self`：设置单元格内容的垂直位置，只作用于单个项目。
+
+```null
+.parent {
+    position: relative;
+}
+.child {
+    position: absolute;
+    margin: auto;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%)
+}
+```
+
+`transform: translate(-50%, -50%)` 的作用是：x轴（负方向），y轴（负方向）都移动**自身长宽**的 50%，以使其居于中心位置。
+
+```null
+.parent {
+    text-align: center;
+    line-height: 300px; 
+}
+.child {
+    display: inline-block;
+    vertical-align: middle;
+    line-height: initial; 
+}
+```
+
+**text-align：水平居中的属性**
+
+**vertical-align：垂直居中属性**
+
+水平居中：
+
+在设置父元素具有 text-align: center 属性的基础上，必须设置子元素的 display: inline-block 或者 display: inline，即实现行内块的水平居中，否则，子元素右侧 margin 将占据一整行。
+
+垂直居中：
+
+line-height: 300px 设置了**父元素的行高**，此时子元素的基线在父元素居中。如果要实现子元素居中，只需要通过设置 vertical-align: middle 让子元素的**基线在子元素中垂直居中**。
+
+但此时子元素的 line-height 默认为 inherit 继承了父元素的 300px，导致子元素中的文字会跑到下面。所以，需要设置 line-height 为 initial 或 normal。
+
+```null
+.parent {
+    display: table-cell;
+    text-align: center;
+    vertical-align: middle;
+}
+.child {
+    display: inline-block;
+}
+```
+
+垂直居中：
+
+将 display 属性设置为 table-cell，**块元素转化为单元格**，然后加上 vertical-align: middle
+
+```null
+.parent {
+    writing-mode: vertical-lr;
+    text-align: center;
+}
+.child {
+    display: inline-block;
+    writing-mode: horizontal-tb; 
+    margin: 0 calc(50% - 50px);
+}
+```
+
+writing-mode 可以改变文档流的显示方式。
+
+`vertical-lr`：垂直方向内内容从上到下，水平方向从左到右
+
+`horizontal-tb`：水平方向自上而下的书写方式。即 left-right-top-bottom
+
+margin: 0 calc(50% - 50px); 可以实现水平居中。
+
+writing-mode: vertical-lr; 改变父元素的文档流向为垂直方向，text-align: center; 使得子元素垂直方向居中（同时需要设置 display: inline-block; 使得子元素为行内块元素）
+
+但由于子元素继承了父元素的 `vertical-lr`，所以需要设置 writing-mode: horizontal-tb; 使得子元素中的文字水平方向。
+
+[CSS水平垂直居中回顾总结](https://juejin.im/post/6858826987688722446)
