@@ -20,7 +20,7 @@ JavaScript 中对象的属性分为：
 
 **使用对象直接量创建的属性**，**它的 writable、enumerable 和 configurable 特性默认为 true**。如：
 
-```null
+```js
 var o = { a: 1 };
 o.b = 2;
 
@@ -40,7 +40,7 @@ console.log(Object.getOwnPropertyDescriptor(o,"b"))
 
 要修改属性默认的特性，可以使用 `Object.defineProperty()` 方法，**在使用 Object.defineProperty、Object.defineProperties 或 Object.create 函数的情况下添加数据属性，writable、enumerable 和 configurable 默认值为 false。** 如：
 
-```null
+```js
 Object.defineProperty(o, "b", {
   value: 2,
   writable: false,
@@ -88,7 +88,7 @@ Object.defineProperties(o, {
 
 定义一个 obj 对象
 
-```null
+```js
 function Foo() {
     this.a = 1 
     this.b = 2
@@ -106,7 +106,7 @@ Object.defineProperty(obj, 'a', {
 
 `for...in` 循环可以遍历对象中**所有可枚举的对象属性（包括对象自有属性和继承的属性）**。不过需要注意的是，使用 `for...in` 循环遍历对象属性时返回的属性会因为各个浏览器不同导致对象属性遍历的顺序有可能不是当初构建时的顺序。
 
-```null
+```js
 for (prop in obj) {
     console.log(prop); 
 }
@@ -126,7 +126,7 @@ console.log(Object.getOwnPropertyDescriptors(obj.__proto__))
 
 如此一来，可以封装一个 getEnumPropertyNames() 方法，用来循环遍历对象属性，返回**自身的可枚举属性**名称组成的数组：（类似 Object.keys() ）
 
-```null
+```js
 var getEnumPropertyNames = function (obj) {
   if (typeof obj !== 'object') throw TypeError(); 
   var props = []; 
@@ -151,7 +151,7 @@ console.log(getEnumPropertyNames(obj));
 
 > 注意：在 ES5 环境，如果传入的参数不是一个对象，而是一个字符串，那么它会报 TypeError。在 ES6 环境，如果传入的是一个非对象参数，内部会对参数作一次强制对象转换，如果转换不成功会抛出 TypeError。
 
-```null
+```js
 console.log(Object.keys(obj)); 
 
 
@@ -169,7 +169,7 @@ Object.keys(undefined);
 
 数组中枚举属性的顺序与 for...in（或 Object.keys()）迭代该对象属性时一致。 数组中不可枚举属性的顺序未定义。
 
-```null
+```js
 console.log(Object.getOwnPropertyNames(obj)) 
 ```
 
@@ -188,7 +188,7 @@ for...of 主要来遍历**可迭代的对象**（包括 Number、String、Array�
 
 for...of 主要用来**获取对象的属性值**，而 for...in 主要获取对象的属性名。
 
-```null
+```js
 Object.prototype.objCustom = function() {}; 
 Array.prototype.arrCustom = function() {}; 
 
@@ -212,20 +212,164 @@ for in 循环以原始插入顺序记录 **myArray 对象的可枚举属性**，
 
 这几个方法之间的差异主要在属性是否可可枚举，是来自己原型，还是实例。
 
-| 方法 | 适用范围 | 描述 |
-| --- | --- | --- |
-| for...in | 对象 | 获取可枚举的实例和原型属性名 |
-| Object.keys() | 数组，对象 | 返回可枚举的实例属性名组成的数组 |
-| Object.getOwnPropertyNames() | 数组、对象 | 返回除原型属性以外的所有属性（包括不可枚举的属性）名组成的数组 |
-| for...of | 可迭代对象(Array, Map, Set, arguments 等) | 返回可迭代对象定义的迭代值 |
 
+<div className='w-full sm:w-full md:w-2/3' style={{
+            overflow: 'auto',
+}}>
+  <table  style={{ 
+                  width:'100%',
+                  borderCollapse: 'collapse',
+                 borderSpacing: 0,emptyCells: 'show',
+                 border: '2px solid #cbcbcb',
+                 textAlign: 'center'}}>
+  <thead style={{fontWeight:'bold',
+                borderBottom: '1px solid #cbcbcb',
+                backgroundColor: '#eeeeee'}}>
+    <tr >
+        {
+          ['方法','适用范围','描述'].map((item)=>{
+            return (
+              <td key={item} style={{borderLeft: '1px solid #cbcbcb',
+                                      borderBottom: '1px solid #cbcbcb',
+                                      borderWidth: '0 0 0 1px',
+                                      padding: '5px',
+                                      }}>{item}</td>
+            )
+          })
+        }
+        
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+        {
+          ['for...in','对象','获取可枚举的实例和原型属性名'].map((item)=>{
+            return (
+              <td key={item} style={{borderLeft: '1px solid #cbcbcb',
+                                      borderWidth: '0 0 0 1px',
+                                      borderBottom: '1px solid #cbcbcb',
+                                      padding: '5px',
+                                      textAlign: 'center'}}>{item}</td>
+            )
+          })
+        }
+    </tr>
+    <tr>
+        {
+          ['Object.keys()','数组，对象','返回可枚举的实例属性名组成的数组'].map((item)=>{
+            return (
+              <td key={item} style={{borderLeft: '1px solid #cbcbcb',
+                                      borderWidth: '0 0 0 1px',
+                                      borderBottom: '1px solid #cbcbcb',
+                                      padding: '5px',
+                                      textAlign: 'center'}}>{item}</td>
+            )
+          })
+        }
+    </tr>
+    <tr>
+        {
+          ['Object.getOwnPropertyNames()','数组、对象','返回除原型属性以外的所有属性（包括不可枚举的属性）名组成的数组'].map((item)=>{
+            return (
+              <td key={item} style={{borderLeft: '1px solid #cbcbcb',
+                                      borderWidth: '0 0 0 1px',
+                                      borderBottom: '1px solid #cbcbcb',
+                                      padding: '5px',
+                                      textAlign: 'center'}}>{item}</td>
+            )
+          })
+        }
+    </tr>
+     <tr>
+        {
+          ['for...of','可迭代对象(Array, Map, Set, arguments 等)','返回可迭代对象定义的迭代值'].map((item)=>{
+            return (
+              <td key={item} style={{borderLeft: '1px solid #cbcbcb',
+                                      borderWidth: '0 0 0 1px',
+                                      borderBottom: '1px solid #cbcbcb',
+                                      padding: '5px',
+                                      textAlign: 'center'}}>{item}</td>
+            )
+          })
+        }
+    </tr>
+  </tbody>
+</table>
+</div>
 满足条件：
 
-| 可枚举 | 实例 | 原型 | 不可枚举 |
-| --- | --- | --- | --- |
-| for...in | for...in | for...in |  |
-| Object.getOwnPropertyNames() | Object.getOwnPropertyNames() |  | Object.getOwnPropertyNames() |
-| Object.keys() | Object.keys() |  |  |
+
+<div className='w-full sm:w-full md:w-2/3' style={{
+            overflow: 'auto',
+}}>
+  <table  style={{ 
+                  width:'100%',
+                  borderCollapse: 'collapse',
+                 borderSpacing: 0,emptyCells: 'show',
+                 border: '2px solid #cbcbcb',
+                 textAlign: 'center'}}>
+  <thead style={{fontWeight:'bold',
+                borderBottom: '1px solid #cbcbcb',
+                backgroundColor: '#eeeeee'}}>
+    <tr >
+        {
+          ['可枚举','实例','原型','不可枚举'].map((item)=>{
+            return (
+              <td key={item} style={{borderLeft: '1px solid #cbcbcb',
+                                      borderBottom: '1px solid #cbcbcb',
+                                      borderWidth: '0 0 0 1px',
+                                      padding: '5px',
+                                      }}>{item}</td>
+            )
+          })
+        }
+        
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+        {
+          ['for...in','for...in','for...in'].map((item)=>{
+            return (
+              <td key={item} style={{borderLeft: '1px solid #cbcbcb',
+                                      borderWidth: '0 0 0 1px',
+                                      borderBottom: '1px solid #cbcbcb',
+                                      padding: '5px',
+                                      textAlign: 'center'}}>{item}</td>
+            )
+          })
+        }
+    </tr>
+    <tr>
+        {
+          ['Object.getOwnPropertyNames()','Object.getOwnPropertyNames()','Object.getOwnPropertyNames()'].map((item)=>{
+            return (
+              <td key={item} style={{borderLeft: '1px solid #cbcbcb',
+                                      borderWidth: '0 0 0 1px',
+                                      borderBottom: '1px solid #cbcbcb',
+                                      padding: '5px',
+                                      textAlign: 'center'}}>{item}</td>
+            )
+          })
+        }
+    </tr>
+    <tr>
+        {
+          ['Object.keys()','Object.keys()',' '].map((item)=>{
+            return (
+              <td key={item} style={{borderLeft: '1px solid #cbcbcb',
+                                      borderWidth: '0 0 0 1px',
+                                      borderBottom: '1px solid #cbcbcb',
+                                      padding: '5px',
+                                      textAlign: 'center'}}>{item}</td>
+            )
+          })
+        }
+    </tr>
+     
+  </tbody>
+</table>
+</div>
 
 > *   for...in 只需要是`可枚举`属性
 >     
