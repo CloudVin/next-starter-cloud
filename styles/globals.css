@@ -2,7 +2,12 @@
 @tailwind utilities;
 
 html{
-  overflow-y: auto;
+  
+}
+body::-webkit-scrollbar {
+
+  display:none
+
 }
 body {
   padding: 0;
