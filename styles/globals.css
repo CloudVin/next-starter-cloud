@@ -1,13 +1,12 @@
 @tailwind components;
 @tailwind utilities;
-html{
-  
-  overflow-y: auto;
-}
-body {
+
+
+html,body {
   padding: 0;
   margin: 0;
   overflow-x: hidden;
+  /* overflow-y: auto; */
   font-family: -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Oxygen,
     Ubuntu, Cantarell, Fira Sans, Droid Sans, Helvetica Neue, sans-serif;
   width: 100%;
